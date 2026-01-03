@@ -1641,18 +1641,18 @@ function RayfieldLibrary:CreateWindow(Settings)
 				local asset = getIcon(Settings.Icon)
 
 				Topbar.Icon.Image = 'rbxassetid://'..asset.id
-				task.spawn(function()
-					local icon = Topbar.Icon
-
-					game:GetService("RunService").RenderStepped:Connect(function(deltaTime)
-						icon.Rotation = icon.Rotation + (-60 * deltaTime)
-					end)
-				end)
 				Topbar.Icon.ImageRectOffset = asset.imageRectOffset
 				Topbar.Icon.ImageRectSize = asset.imageRectSize
 			else
 				Topbar.Icon.Image = getAssetUri(Settings.Icon)
 			end
+			task.spawn(function()
+				local icon = Topbar.Icon
+
+				game:GetService("RunService").RenderStepped:Connect(function(deltaTime)
+					icon.Rotation = icon.Rotation + (-60 * deltaTime)
+				end)
+			end)
 		else
 			Topbar.Icon.Image = "rbxassetid://" .. 0
 		end
