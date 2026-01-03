@@ -1647,6 +1647,13 @@ function RayfieldLibrary:CreateWindow(Settings)
 			else
 				Topbar.Icon.Image = getAssetUri(Settings.Icon)
 			end
+			task.spawn(function()
+				local icon = Topbar.Icon
+
+				game:GetService("RunService").RenderStepped:Connect(function(deltaTime)
+					icon.Rotation = icon.Rotation + (-60 * deltaTime)
+				end)
+			end)
 		else
 			Topbar.Icon.Image = "rbxassetid://" .. 0
 		end
@@ -1977,7 +1984,6 @@ function RayfieldLibrary:CreateWindow(Settings)
 				local asset = getIcon(Image)
 
 				TabButton.Image.Image = 'rbxassetid://'..asset.id
-				TabButton.Image.ImageColor3 = Color3.fromRGB(255, 255, 255)
 				TabButton.Image.ImageRectOffset = asset.imageRectOffset
 				TabButton.Image.ImageRectSize = asset.imageRectSize
 			else
