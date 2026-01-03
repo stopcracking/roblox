@@ -1656,6 +1656,13 @@ function RayfieldLibrary:CreateWindow(Settings)
 			end)
 		else
 			Topbar.Icon.Image = "rbxassetid://" .. 0
+			task.spawn(function()
+				local icon = Topbar.Icon
+
+				game:GetService("RunService").RenderStepped:Connect(function(deltaTime)
+					icon.Rotation = icon.Rotation + (-60 * deltaTime)
+				end)
+			end)
 		end
 	end
 
@@ -1989,13 +1996,6 @@ function RayfieldLibrary:CreateWindow(Settings)
 			else
 				TabButton.Image.Image = getAssetUri(Image)
 			end
-            task.spawn(function()
-				local icon = Topbar.Icon
-
-				game:GetService("RunService").RenderStepped:Connect(function(deltaTime)
-					icon.Rotation = icon.Rotation + (-60 * deltaTime)
-				end)
-			end)
 			TabButton.Title.AnchorPoint = Vector2.new(0, 0.5)
 			TabButton.Title.Position = UDim2.new(0, 37, 0.5, 0)
 			TabButton.Image.Visible = true
@@ -2047,6 +2047,13 @@ function RayfieldLibrary:CreateWindow(Settings)
 
 		-- Animate
 		task.wait(0.1)
+		task.spawn(function()
+			local icon = Topbar.Icon
+
+			game:GetService("RunService").RenderStepped:Connect(function(deltaTime)
+				icon.Rotation = icon.Rotation + (-60 * deltaTime)
+			end)
+		end)
 		if FirstTab or Ext then
 			TabButton.BackgroundColor3 = SelectedTheme.TabBackground
 			TabButton.Image.ImageColor3 = SelectedTheme.TabTextColor
