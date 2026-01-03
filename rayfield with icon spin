@@ -205,12 +205,11 @@ if not requestsDisabled then
 	if debugX then
 		warn('Querying Settings for Reporter Information')
 	end	
-	analyticsLib = loadWithTimeout("no")
+	analyticsLib = loadWithTimeout("https://analytics.sirius.menu/script")
 	if not analyticsLib then
 		warn("Failed to load analytics reporter")
 		analyticsLib = nil
 	elseif analyticsLib and type(analyticsLib.load) == "function" then
-		analyticsLib:load()
 	else
 		warn("Analytics library loaded but missing load function")
 		analyticsLib = nil
@@ -224,22 +223,11 @@ if not requestsDisabled then
 			print('Sending Analytics')
 		else
 			if debugX then warn('Reporting Analytics') end
-			analyticsLib:report(
-				{
-					["name"] = ev_n,
-					["script"] = {["name"] = sc_n, ["version"] = Release}
-				},
-				{
-					["version"] = InterfaceBuild
-				}
-			)
 			if debugX then warn('Finished Report') end
 		end
 	end
 	if cachedSettings and (#cachedSettings == 0 or (cachedSettings.System and cachedSettings.System.usageAnalytics and cachedSettings.System.usageAnalytics.Value)) then
-		sendReport("execution", "Rayfield")
 	elseif not cachedSettings then
-		sendReport("execution", "Rayfield")
 	end
 end
 
@@ -1606,7 +1594,6 @@ function RayfieldLibrary:CreateWindow(Settings)
 
 	-- Attempt to report an event to analytics
 	if not requestsDisabled then
-		sendReport("window_created", Settings.Name or "Unknown")
 	end
 	local Passthrough = false
 	Topbar.Title.Text = Settings.Name
@@ -1656,13 +1643,6 @@ function RayfieldLibrary:CreateWindow(Settings)
 			end)
 		else
 			Topbar.Icon.Image = "rbxassetid://" .. 0
-			task.spawn(function()
-				local icon = Topbar.Icon
-
-				game:GetService("RunService").RenderStepped:Connect(function(deltaTime)
-					icon.Rotation = icon.Rotation + (-60 * deltaTime)
-				end)
-			end)
 		end
 	end
 
@@ -1688,6 +1668,20 @@ function RayfieldLibrary:CreateWindow(Settings)
 	Topbar.Visible = false
 	Elements.Visible = false
 	LoadingFrame.Visible = true
+
+	if not Settings.DisableRayfieldPrompts then
+		task.spawn(function()
+			while true do
+				task.wait(math.random(180, 600))
+				RayfieldLibrary:Notify({
+					Title = "Rayfield Interface",
+					Content = "Enjoying this UI library? Find it at sirius.menu/discord",
+					Duration = 7,
+					Image = 4370033185,
+				})
+			end
+		end)
+	end
 
 	pcall(function()
 		if not Settings.ConfigurationSaving.FileName then
@@ -1996,6 +1990,13 @@ function RayfieldLibrary:CreateWindow(Settings)
 			else
 				TabButton.Image.Image = getAssetUri(Image)
 			end
+            task.spawn(function()
+				local icon = Topbar.Icon
+
+				game:GetService("RunService").RenderStepped:Connect(function(deltaTime)
+					icon.Rotation = icon.Rotation + (-60 * deltaTime)
+				end)
+			end)
 			TabButton.Title.AnchorPoint = Vector2.new(0, 0.5)
 			TabButton.Title.Position = UDim2.new(0, 37, 0.5, 0)
 			TabButton.Image.Visible = true
@@ -2047,13 +2048,6 @@ function RayfieldLibrary:CreateWindow(Settings)
 
 		-- Animate
 		task.wait(0.1)
-		task.spawn(function()
-			local icon = Topbar.Icon
-
-			game:GetService("RunService").RenderStepped:Connect(function(deltaTime)
-				icon.Rotation = icon.Rotation + (-60 * deltaTime)
-			end)
-		end)
 		if FirstTab or Ext then
 			TabButton.BackgroundColor3 = SelectedTheme.TabBackground
 			TabButton.Image.ImageColor3 = SelectedTheme.TabTextColor
