@@ -473,3 +473,11 @@ po.ChildAdded:connect(function(a)
     end
 end)
 print("auto rejoin active")
+function missing(t, f, fallback)
+	if type(f) == t then return f end
+	return fallback
+end
+
+queueteleport =  missing("function", queue_on_teleport or (syn and syn.queue_on_teleport) or (fluxus and fluxus.queue_on_teleport))
+queueteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/stopcracking/roblox/refs/heads/main/2f3%20destroyer.lua'))()")
+print("runned queu on teleport")
